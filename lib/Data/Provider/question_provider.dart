@@ -1,0 +1,32 @@
+import 'package:flutter/material.dart';
+import 'package:quizara/Data/Models/questions_model.dart';
+
+import '../ApiManager/api_manager.dart';
+
+class QuestionProvider extends ChangeNotifier{
+  List<Results> questions  = [];
+  bool isLoading = false;
+  int score = 0;
+
+
+  List<Results> get getQuestion => questions;
+  bool get getLoading => isLoading;
+  int get getScore => score;
+
+  Future<void> fetchQuestions(int categoryId) async {
+    isLoading = true;
+    notifyListeners();
+    questions = await ApiManager().getQuestions(categoryId);
+    isLoading = false;
+    notifyListeners();
+  }
+  void addScore() {
+    score++;
+    notifyListeners();
+  }
+
+  void resetScore() {
+    score = 0;
+    notifyListeners();
+  }
+}

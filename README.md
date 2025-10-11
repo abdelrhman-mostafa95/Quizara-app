@@ -1,16 +1,27 @@
-# quizara
+# Quizara 🎮
 
-A new Flutter project.
+A small quiz game built with **Flutter**, using **Provider** for state management and **Firebase** for authentication and data storage.  
 
-## Getting Started
+## 🔑 Authentication
+The app supports **two roles**:
+- **Teacher** 👩‍🏫  
+  - Can create quiz categories.  
+  - Each category contains **10 questions** with their answers.  
+- **Student** 👨‍🎓  
+  - Can log in and play quizzes created by teachers.  
 
-This project is a starting point for a Flutter application.
+## 🛠️ Technologies Used
+- **Flutter** – cross-platform mobile development  
+- **Provider** – state management  
+- **Firebase** – authentication and Firestore database  
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Features
+- Role-based authentication (Teacher / Student)  
+- Teachers can add categories with questions and answers  
+- Each category includes 10 questions  
+- Students can attempt quizzes and test their knowledge  
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 📖 Getting Started
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/your-username/quizara.git

@@ -7,6 +7,8 @@ import '../ScoreScreen/score_screen.dart';
 class QuestionScreen extends StatefulWidget {
   final int categoryId;
   final String categoryName;
+  final String source;
+
   final List<Color> colors = [
     Colors.green,
     Colors.red,
@@ -20,6 +22,7 @@ class QuestionScreen extends StatefulWidget {
   QuestionScreen({
     required this.categoryId,
     required this.categoryName,
+    required this.source,
   });
 
   @override
@@ -35,28 +38,30 @@ class _QuestionScreenState extends State<QuestionScreen> {
     super.initState();
     trueButtonColors = List.filled(50, const Color(0xFF90F390));
     falseButtonColors = List.filled(50, const Color(0xFFF17777));
+
+    Future.microtask(() {
+      Provider.of<QuestionProvider>(context, listen: false).fetchQuestions(
+        categoryId: widget.categoryId,
+        categoryName: widget.categoryName,
+        source: widget.source,
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     var provider = Provider.of<QuestionProvider>(context);
-    if (provider.questions.isEmpty) {
-      Future.microtask(() {
-        provider.fetchQuestions(widget.categoryId);
-      });
-    }
+
     return Scaffold(
       body: Stack(
         children: [
           Container(
             width: double.infinity,
             height: double.infinity,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
                   Colors.red,
-                  Colors.orange,
-                  Colors.green,
                   Colors.blue,
                 ],
                 begin: Alignment.topLeft,
@@ -66,19 +71,19 @@ class _QuestionScreenState extends State<QuestionScreen> {
           ),
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12.0),
               child: Row(
                 children: [
                   IconButton(
-                    icon: Icon(Icons.arrow_back, color: Colors.white),
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
                     onPressed: () {
                       Navigator.pop(context);
                     },
                   ),
-                  SizedBox(width: 8),
+                  const SizedBox(width: 8),
                   Text(
                     widget.categoryName,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
@@ -89,9 +94,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
             ),
           ),
           Container(
-            margin: EdgeInsets.only(top: 80),
+            margin: const EdgeInsets.only(top: 80),
             child: provider.isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? const Center(child: CircularProgressIndicator())
+                : provider.questions.isEmpty
+                ? const Center(
+              child: Text(
+                "No questions found 🧐",
+                style: TextStyle(color: Colors.white, fontSize: 18),
+              ),
+            )
                 : ListView.builder(
               itemCount: provider.questions.length + 1,
               itemBuilder: (context, index) {
@@ -104,7 +116,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     falseButtonColor: falseButtonColors[index],
                     onTruePressed: () {
                       setState(() {
-                        if (provider.questions[index].correctAnswer?.toLowerCase() == "true") {
+                        final correct = provider.questions[index].correctAnswer;
+                        final isCorrect = (correct is bool)
+                            ? correct == true
+                            : correct.toString().toLowerCase() == "true";
+                        if (isCorrect) {
                           provider.addScore();
                           trueButtonColors[index] = Colors.green[800]!;
                         } else {
@@ -114,7 +130,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     },
                     onFalsePressed: () {
                       setState(() {
-                        if (provider.questions[index].correctAnswer?.toLowerCase() == "false") {
+                        final correct = provider.questions[index].correctAnswer;
+                        final isCorrect = (correct is bool)
+                            ? correct == false
+                            : correct.toString().toLowerCase() == "false";
+                        if (isCorrect) {
                           provider.addScore();
                           falseButtonColors[index] = Colors.green[800]!;
                         } else {
@@ -125,24 +145,25 @@ class _QuestionScreenState extends State<QuestionScreen> {
                   );
                 } else {
                   return Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 40),
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFFFC107),
+                        backgroundColor: const Color(0xFFFFC107),
                         foregroundColor: Colors.black,
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         "See Score",
                         style: TextStyle(fontSize: 18, color: Colors.white),
                       ),
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const ScoreScreen()),
+                          MaterialPageRoute(
+                              builder: (context) => const ScoreScreen()),
                         );
                       },
                     ),

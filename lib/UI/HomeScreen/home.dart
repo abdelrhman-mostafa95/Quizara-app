@@ -32,8 +32,6 @@ class _HomeScreenState extends State<HomeScreen> {
           gradient: LinearGradient(
             colors: [
               Colors.red,
-              Colors.orange,
-              Colors.green,
               Colors.blue
             ],
             begin: Alignment.topLeft,
